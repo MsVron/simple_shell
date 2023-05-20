@@ -23,6 +23,13 @@ char *read_command(void)
 void execute_command(char *command)
 {
     command[strcspn(command, "\n")] = '\0'; /* Remove trailing newline character */
+
+    if (strcmp(command, "exit") == 0)
+    {
+        printf("Exiting shell.\n");
+        exit(EXIT_SUCCESS);
+    }
+
     pid_t pid = fork();
 
     if (pid == -1)
