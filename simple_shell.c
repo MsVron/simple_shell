@@ -98,57 +98,53 @@ void execute_command(char *command)
  *
  *Return: Always 0 (Success)
  */
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char *env[])
 {
-    char *filename = NULL;
-    char line[BUFFER_SIZE];
-    char *command;
+	char command[BUFFER_SIZE];
+	int n;
 
-    if (argc == 2)
-    {
-        /* Check if a filename is provided as a command line argument */
-        filename = argv[1];
-    }
+	(void)argc;
+	(void)argv;
 
-    if (filename != NULL)
-    {
-        /* File mode: execute commands from the file */
-        FILE *file = fopen(filename, "r");
+	while (1)
+	{
+		printf("$ "); /* Display prompt */
+		fflush(stdout);
 
-        if (file == NULL)
-        {
-            perror("fopen");
-            exit(EXIT_FAILURE);
-        }
+		n = read(STDIN_FILENO, command, BUFFER_SIZE); /* Read command */
 
-        while (fgets(line, sizeof(line), file))
-        {
-            execute_command(line);
-        }
+		if (n == -1)
+		{
+			perror("read");
+			exit(EXIT_FAILURE);
+		}
 
-        fclose(file);
-    }
-    else
-    {
-        /* Interactive mode: read commands from stdin */
-        while (1)
-        {
-            display_prompt();
-            
-            command = read_command();
-            
-            if (feof(stdin))
-            {
-                /* Handle end of file (Ctrl+D) */
-                printf("\n");
-                break;
-            }
+		if (n == 0) /* Handle end of file (Ctrl+D) */
+			break;
 
-            execute_command(command);
+		/* Remove newline character from the command */
+		command[n - 1] = '\0';
 
-            free(command);
-        }
-    }
+		pid_t pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid == 0) /* Child process */
+		{
+			if (execve(command, argv, env) == -1) /* Execute command */
+			{
+				perror("execve");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else /* Parent process */
+		{
+			wait(NULL); /* Wait for child to complete */
+		}
+	}
 
-    return 0;
+	printf("\n");
+	return 0;
 }
