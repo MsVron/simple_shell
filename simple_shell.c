@@ -43,6 +43,7 @@ char *read_command(void)
  */
 void execute_command(char *command)
 {
+    pid_t pid;
     command[strcspn(command, "\n")] = '\0'; /* Remove trailing newline character */
 
     if (strcmp(command, "exit") == 0)
@@ -50,8 +51,7 @@ void execute_command(char *command)
         printf("Exiting shell.\n");
         exit(EXIT_SUCCESS);
     }
-
-    pid_t pid;
+    
     pid = fork();
 
     if (pid == -1)
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 {
     char *filename = NULL;
     char line[BUFFER_SIZE];
-
+    char *command;
 
     if (argc == 2)
     {
@@ -134,8 +134,7 @@ int main(int argc, char *argv[])
         while (1)
         {
             display_prompt();
-
-            char *command;
+            
             command = read_command();
             
             if (feof(stdin))
