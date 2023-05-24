@@ -18,5 +18,5 @@ int main(void)
 void quote(void)
 {
 	printf("I'm not a great programmer; I'm just a good programmer");
-	printg(" with great habits. - Ada Lovelace\n");
+	printf(" with great habits. - Ada Lovelace\n");
 }
