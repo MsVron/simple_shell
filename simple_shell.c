@@ -2,6 +2,7 @@
 
 #define BUFFER_SIZE 1024
 
+
 /**
  *display_prompt - Displays a custom prompt
  *
@@ -50,7 +51,8 @@ void execute_command(char *command)
         exit(EXIT_SUCCESS);
     }
 
-    pid_t pid = fork();
+    pid_t pid;
+    pid = fork();
 
     if (pid == -1)
     {
@@ -60,7 +62,10 @@ void execute_command(char *command)
     else if (pid == 0)
     {
         /* Child process */
-        char *args[] = {command, NULL};
+        char **args = malloc(2 * sizeof(char *));
+        args[0] = strdup(command);
+        args[1] = NULL;
+        
         execvp(args[0], args);
         perror("execvp");
         exit(EXIT_FAILURE);
@@ -96,6 +101,8 @@ void execute_command(char *command)
 int main(int argc, char *argv[])
 {
     char *filename = NULL;
+    char line[BUFFER_SIZE];
+
 
     if (argc == 2)
     {
@@ -114,8 +121,6 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        char line[BUFFER_SIZE];
-
         while (fgets(line, sizeof(line), file))
         {
             execute_command(line);
@@ -130,8 +135,9 @@ int main(int argc, char *argv[])
         {
             display_prompt();
 
-            char *command = read_command();
-
+            char *command;
+            command = read_command();
+            
             if (feof(stdin))
             {
                 /* Handle end of file (Ctrl+D) */
