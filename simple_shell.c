@@ -101,6 +101,7 @@ void execute_command(char *command)
 int main(int argc, char *argv[], char *env[])
 {
 	char command[BUFFER_SIZE];
+	pid_t pid;
 	int n;
 
 	(void)argc;
@@ -125,7 +126,6 @@ int main(int argc, char *argv[], char *env[])
 		/* Remove newline character from the command */
 		command[n - 1] = '\0';
 
-		pid_t pid;
 		pid = fork();
 		
 		if (pid == -1)
