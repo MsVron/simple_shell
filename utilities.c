@@ -5,6 +5,7 @@ char *get_pid(void);
 char *get_env_value(char *beginning, int len);
 void variable_replacement(char **args, int *exe_ret);
 
+ssize_t get_new_len(char *line);
 int should_insert_space(char previous, char current, char next);
 void handle_line(char **line, ssize_t read);
 void logical_ops(char *line, ssize_t *new_len);
