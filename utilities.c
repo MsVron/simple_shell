@@ -8,6 +8,7 @@ void variable_replacement(char **args, int *exe_ret);
 int should_insert_space(char previous, char current, char next);
 void handle_line(char **line, ssize_t read);
 ssize_t get_new_len(char *line);
+void update_new_len(char *line, ssize_t *new_len);
 void logical_ops(char *line, ssize_t *new_len);
 
 /**
@@ -230,13 +231,13 @@ void handle_line(char **line, ssize_t read)
 }
 
 /**
- * get_new_len - Gets the new length of a line partitioned
- *               by ";", "||", "&&&", or "#".
- * @line: The line to check.
+ *get_new_len - Gets the new length of a line partitioned
+ *              by ";", "||", "&&&", or "#".
+ *@line: The line to check.
  *
- * Return: The new length of the line.
+ *Return: The new length of the line.
  *
- * Description: Cuts short lines containing '#' comments with '\0'.
+ *Description: Cuts short lines containing '#' comments with '\0'.
  */
 
 ssize_t get_new_len(char *line)
@@ -249,6 +250,7 @@ ssize_t get_new_len(char *line)
 	{
 		current = line[i];
 		next = line[i + 1];
+
 		if (current == '#')
 		{
 			if (i == 0 || line[i - 1] == ' ')
@@ -262,22 +264,17 @@ ssize_t get_new_len(char *line)
 			if (current == ';')
 			{
 				if (next == ';' && line[i - 1] != ' ' && line[i - 1] != ';')
-				{
 					new_len += 2;
-					continue;
-				}
 				else if (line[i - 1] == ';' && next != ' ')
-				{
 					new_len += 2;
-					continue;
-				}
+
 				if (line[i - 1] != ' ')
 					new_len++;
 				if (next != ' ')
 					new_len++;
 			}
 			else
-				logical_ops(&line[i], &new_len);
+				update_new_len(&line[i], &new_len);
 		}
 		else if (current == ';')
 		{
@@ -286,10 +283,31 @@ ssize_t get_new_len(char *line)
 			if (next != ' ' && next != ';')
 				new_len++;
 		}
+
 		new_len++;
 	}
-	return (new_len);
+
+	return new_len;
 }
+
+/**
+ *update_new_len - Updates the new length based on specific conditions.
+ *@line: The line to check.
+ *@new_len: Pointer to the new length.
+ *
+ *Description: Handles the new length calculation for specific conditions
+ *             in the line.
+ */
+void update_new_len(char *line, ssize_t *new_len)
+{
+	if (line[0] == ';' && line[1] == ';')
+		*
+		new_len += 2;
+	else if (line[0] == ';' || line[0] == '|' || line[0] == '&')
+		*
+		new_len += 1;
+}
+
 /**
  * logical_ops - Checks a line for logical operators "||" or "&&".
  * @line: A pointer to the character to check in the line.
