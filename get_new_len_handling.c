@@ -1,5 +1,7 @@
 #include "main.h"
 
+/* tasks 11 and 12*/
+
 ssize_t get_new_len(char *line);
 ssize_t handle_semicolon_case(char *line, size_t index, char next);
 ssize_t handle_initial_semicolon_case(char *line, size_t index, char next);
