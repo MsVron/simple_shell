@@ -6,7 +6,6 @@ char *get_env_value(char *beginning, int len);
 void variable_replacement(char **args, int *exe_ret);
 
 void handle_line(char **line, ssize_t read);
-void handle_character(char *new_line, size_t *j, char previous, char current, char next)
 ssize_t get_new_len(char *line);
 void logical_ops(char *line, ssize_t *new_len);
 
