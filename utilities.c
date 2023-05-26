@@ -160,12 +160,20 @@ void variable_replacement(char **line, int *exe_ret)
 }
 
 /**
- * should_insert_space - Checks if a space should
- * be inserted between characters.
+ * should_insert_space - Checks whether a space should be inserted between
+ *                       characters.
  * @previous: The previous character.
+ * @current: The current character.
  * @next: The next character.
  *
  * Return: 1 if a space should be inserted, 0 otherwise.
+ *
+ * Description: Determines whether a space should be inserted between
+ *              characters based on specific conditions. It checks for cases
+ *              involving semicolons, double ampersands, and double vertical
+ *              bars (logical operators). If the conditions are met, it returns
+ *              1 to indicate that a space should be inserted; otherwise, it
+ *              returns 0.
  */
 int should_insert_space(char previous, char current, char next)
 {
