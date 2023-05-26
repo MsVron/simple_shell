@@ -3,7 +3,7 @@
 ssize_t get_new_len(char *line);
 ssize_t handle_semicolon_case(char *line, size_t index, char next);
 ssize_t handle_initial_semicolon_case(char *line, size_t index, char next);
-ssize_t update_new_len(char *line);
+void update_new_len(char *line, ssize_t *new_len);
 
 /**
  *get_new_len - Gets the new length of a line partitioned
@@ -66,40 +66,49 @@ ssize_t get_new_len(char *line)
 }
 
 /**
- *should_insert_space - Checks whether a space should be inserted between
- *                      characters.
- *@previous: The previous character.
- *@current: The current character.
+ *handle_semicolon_case - Handles the new length calculation for semicolon cases.
+ *@line: The line to check.
+ *@index: The current index in the line.
  *@next: The next character.
  *
- *Return: 1 if a space should be inserted, 0 otherwise.
+ *Return: The additional length to add.
  *
- *Description: Determines whether a space should be inserted between
- *             characters based on specific conditions. It checks for cases
- *             involving semicolons, double ampersands, and double vertical
- *             bars (logical operators). If the conditions are met, it returns
- *             1 to indicate that a space should be inserted; otherwise, it
- *             returns 0.
+ *Description: Handles the new length calculation for cases involving semicolons.
+ *             It checks for specific conditions and returns the additional length to add.
  */
-int should_insert_space(char previous, char current, char next)
+ssize_t handle_semicolon_case(char *line, size_t index, char next)
 {
-	if (current == ';')
-	{
-		if (next == ';' && previous != ' ' && previous != ';')
-			return (1);
-		else if (previous == ';' && next != ' ')
-			return (1);
-		if (previous != ' ')
-			return (1);
-		if (next != ' ')
-			return (1);
-	}
-	else if (current == '&' && next == '&' && previous != ' ')
-		return (1);
-	else if (current == '|' && next == '|' && previous != ' ')
-		return (1);
+	ssize_t additional_len = 0;
 
-	return (0);
+	if (next != ' ')
+		additional_len++;
+	if (line[index - 1] != ' ')
+		additional_len++;
+
+	return additional_len + 2;
+}
+
+/**
+ *handle_initial_semicolon_case - Handles the new length calculation for initial semicolon case.
+ *@line: The line to check.
+ *@index: The current index in the line.
+ *@next: The next character.
+ *
+ *Return: The additional length to add.
+ *
+ *Description: Handles the new length calculation for the initial semicolon case.
+ *             It checks for specific conditions and returns the additional length to add.
+ */
+ssize_t handle_initial_semicolon_case(char *line, size_t index, char next)
+{
+	ssize_t additional_len = 0;
+
+	if (line[index - 1] != ' ')
+		additional_len++;
+	if (next != ' ' && next != ';')
+		additional_len++;
+
+	return additional_len;
 }
 
 /**
