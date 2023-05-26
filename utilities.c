@@ -5,6 +5,7 @@ char *get_pid(void);
 char *get_env_value(char *beginning, int len);
 void variable_replacement(char **args, int *exe_ret);
 
+int should_insert_space(char previous, char current, char next);
 void handle_line(char **line, ssize_t read);
 ssize_t get_new_len(char *line);
 void logical_ops(char *line, ssize_t *new_len);
@@ -159,12 +160,41 @@ void variable_replacement(char **line, int *exe_ret)
 }
 
 /**
- * handle_line - Partitions a line read from standard input as needed.
- * @line: A pointer to a line read from standard input.
- * @read: The length of line.
+ *should_insert_space - Checks if a space should be inserted between characters.
+ *@previous: The previous character.
+ *@current: The current character.
+ *@next: The next character.
  *
- * Description: Spaces are inserted to separate ";", "||", and "&&".
- *              Replaces "#" with '\0'.
+ *Returns: 1 if a space should be inserted, 0 otherwise.
+ */
+int should_insert_space(char previous, char current, char next)
+{
+	if (current == ';')
+	{
+		if (next == ';' && previous != ' ' && previous != ';')
+			return 1;
+		else if (previous == ';' && next != ' ')
+			return 1;
+		if (previous != ' ')
+			return 1;
+		if (next != ' ')
+			return 1;
+	}
+	else if (current == '&' && next == '&' && previous != ' ')
+		return 1;
+	else if (current == '|' && next == '|' && previous != ' ')
+		return 1;
+
+	return 0;
+}
+
+/**
+ *handle_line - Partitions a line read from standard input as needed.
+ *@line: A pointer to a line read from standard input.
+ *@read: The length of line.
+ *
+ *Description: Spaces are inserted to separate ";", "||", and "&&".
+ *             Replaces "#" with '\0'.
  */
 void handle_line(char **line, ssize_t read)
 {
@@ -186,63 +216,13 @@ void handle_line(char **line, ssize_t read)
 		current = old_line[i];
 		next = old_line[i + 1];
 		if (i != 0)
-		{
 			previous = old_line[i - 1];
-			if (current == ';')
-			{
-				if (next == ';' && previous != ' ' && previous != ';')
-				{
-					new_line[j++] = ' ';
-					new_line[j++] = ';';
-					continue;
-				}
-				else if (previous == ';' && next != ' ')
-				{
-					new_line[j++] = ';';
-					new_line[j++] = ' ';
-					continue;
-				}
-				if (previous != ' ')
-					new_line[j++] = ' ';
-				new_line[j++] = ';';
-				if (next != ' ')
-					new_line[j++] = ' ';
-				continue;
-			}
-			else if (current == '&')
-			{
-				if (next == '&' && previous != ' ')
-					new_line[j++] = ' ';
-				else if (previous == '&' && next != ' ')
-				{
-					new_line[j++] = '&';
-					new_line[j++] = ' ';
-					continue;
-				}
-			}
-			else if (current == '|')
-			{
-				if (next == '|' && previous != ' ')
-					new_line[j++]  = ' ';
-				else if (previous == '|' && next != ' ')
-				{
-					new_line[j++] = '|';
-					new_line[j++] = ' ';
-					continue;
-				}
-			}
-		}
-		else if (current == ';')
-		{
-			if (i != 0 && old_line[i - 1] != ' ')
-				new_line[j++] = ' ';
-			new_line[j++] = ';';
-			if (next != ' ' && next != ';')
-				new_line[j++] = ' ';
-			continue;
-		}
+
+		if (i != 0 && should_insert_space(previous, current, next))
+			new_line[j++] = ' ';
 		new_line[j++] = old_line[i];
 	}
+
 	new_line[j] = '\0';
 
 	free(*line);
