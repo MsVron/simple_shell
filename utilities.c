@@ -319,4 +319,3 @@ void logical_ops(char *line, ssize_t *new_len)
 			(*new_len)++;
 	}
 }
-
