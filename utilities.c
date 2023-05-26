@@ -170,98 +170,84 @@ void variable_replacement(char **line, int *exe_ret)
 void handle_line(char **line, ssize_t read)
 {
 	char *old_line, *new_line;
+	char previous, current, next;
 	size_t i, j;
 	ssize_t new_len;
 
 	new_len = get_new_len(*line);
 	if (new_len == read - 1)
 		return;
-
 	new_line = malloc(new_len + 1);
 	if (!new_line)
 		return;
-
 	j = 0;
 	old_line = *line;
-
 	for (i = 0; old_line[i]; i++)
 	{
-		char previous = (i != 0) ? old_line[i - 1] : '\0';
-		char current = old_line[i];
-		char next = old_line[i + 1];
-		handle_character(new_line, &j, previous, current, next);
+		current = old_line[i];
+		next = old_line[i + 1];
+		if (i != 0)
+		{
+			previous = old_line[i - 1];
+			if (current == ';')
+			{
+				if (next == ';' && previous != ' ' && previous != ';')
+				{
+					new_line[j++] = ' ';
+					new_line[j++] = ';';
+					continue;
+				}
+				else if (previous == ';' && next != ' ')
+				{
+					new_line[j++] = ';';
+					new_line[j++] = ' ';
+					continue;
+				}
+				if (previous != ' ')
+					new_line[j++] = ' ';
+				new_line[j++] = ';';
+				if (next != ' ')
+					new_line[j++] = ' ';
+				continue;
+			}
+			else if (current == '&')
+			{
+				if (next == '&' && previous != ' ')
+					new_line[j++] = ' ';
+				else if (previous == '&' && next != ' ')
+				{
+					new_line[j++] = '&';
+					new_line[j++] = ' ';
+					continue;
+				}
+			}
+			else if (current == '|')
+			{
+				if (next == '|' && previous != ' ')
+					new_line[j++]  = ' ';
+				else if (previous == '|' && next != ' ')
+				{
+					new_line[j++] = '|';
+					new_line[j++] = ' ';
+					continue;
+				}
+			}
+		}
+		else if (current == ';')
+		{
+			if (i != 0 && old_line[i - 1] != ' ')
+				new_line[j++] = ' ';
+			new_line[j++] = ';';
+			if (next != ' ' && next != ';')
+				new_line[j++] = ' ';
+			continue;
+		}
+		new_line[j++] = old_line[i];
 	}
-
 	new_line[j] = '\0';
 
 	free(*line);
 	*line = new_line;
-}
-
-/**
- * handle_character - Handles individual characters during line partitioning.
- *
- * @old_line: The original line being processed.
- * @new_line: The updated line with characters and separators.
- * @j: A pointer to the index in new_line where the next character should be added.
- * @previous: The character preceding the current character.
- * @current: The current character being processed.
- * @next: The character following the current character.
- *
- * Description:
- * Examines each character in the line and determines whether separators, such as
- * ";", "||", and "&&", need to be inserted to enforce proper spacing.
- * Updates the new_line and j variables based on the character analysis.
- * This function is used in the handle_line function for line partitioning.
- */
-void handle_character(char *new_line, size_t *j, char previous, char current, char next)
-{
-	if (i != 0)
-	{
-		if (current == ';')
-		{
-			if (next == ';' && previous != ' ' && previous != ';')
-			{
-				new_line[*j++] = ' ';
-				new_line[*j++] = ';';
-				return;
-			}
-			else if (previous == ';' && next != ' ')
-			{
-				new_line[*j++] = ';';
-				new_line[*j++] = ' ';
-				return;
-			}
-
-			if (previous != ' ')
-				new_line[*j++] = ' ';
-			new_line[*j++] = ';';
-			if (next != ' ')
-				new_line[*j++] = ' ';
-			return;
-		}
-		else if (current == '&')
-		{
-			if (next == ' ' && previous != ' ')
-				new_line[*j++] = ' ';
-		}
-		else if (current == '|')
-		{
-			if (next == ' ' && previous != ' ')
-				new_line[*j++] = ' ';
-		}
-	}
-	else if (current == ';')
-	{
-		if (i != 0 && previous != ' ')
-			new_line[*j++] = ' ';
-		new_line[*j++] = ';';
-		if (next != ' ' && next != ';')
-			new_line[*j++] = ' ';
-		return;
-	}
-
-	new_line[*j++] = old_line[i];
 }
 
 /**
