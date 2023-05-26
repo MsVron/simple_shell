@@ -172,20 +172,20 @@ int should_insert_space(char previous, char current, char next)
 	if (current == ';')
 	{
 		if (next == ';' && previous != ' ' && previous != ';')
-			return 1;
+			return (1);
 		else if (previous == ';' && next != ' ')
-			return 1;
+			return (1);
 		if (previous != ' ')
-			return 1;
+			return (1);
 		if (next != ' ')
-			return 1;
+			return (1);
 	}
 	else if (current == '&' && next == '&' && previous != ' ')
-		return 1;
+		return (1);
 	else if (current == '|' && next == '|' && previous != ' ')
-		return 1;
+		return (1);
 
-	return 0;
+	return (0);
 }
 
 /**
