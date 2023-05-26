@@ -1,5 +1,10 @@
 #include "main.c"
 
+ssize_t get_new_len(char *line);
+ssize_t handle_semicolon_case(char *line, size_t index, char next);
+ssize_t handle_initial_semicolon_case(char *line, size_t index, char next);
+ssize_t update_new_len(char *line);
+
 /**
  *get_new_len - Gets the new length of a line partitioned
  *              by ";", "||", "&&&", or "#".
