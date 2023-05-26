@@ -7,8 +7,6 @@ void variable_replacement(char **args, int *exe_ret);
 
 int should_insert_space(char previous, char current, char next);
 void handle_line(char **line, ssize_t read);
-ssize_t get_new_len(char *line);
-void update_new_len(char *line, ssize_t *new_len);
 void logical_ops(char *line, ssize_t *new_len);
 
 /**
