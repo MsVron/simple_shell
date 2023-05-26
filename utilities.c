@@ -160,13 +160,12 @@ void variable_replacement(char **line, int *exe_ret)
 }
 
 /**
- * should_insert_space - Checks if a space should 
+ * should_insert_space - Checks if a space should
  * be inserted between characters.
  * @previous: The previous character.
- * @current: The current character.
  * @next: The next character.
  *
- * Returns: 1 if a space should be inserted, 0 otherwise.
+ * Return: 1 if a space should be inserted, 0 otherwise.
  */
 int should_insert_space(char previous, char current, char next)
 {
