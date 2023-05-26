@@ -14,6 +14,7 @@ ssize_t update_new_len(char *line);
  *
  *Description: Cuts short lines containing '#' comments with '\0'.
  */
+
 ssize_t get_new_len(char *line)
 {
 	size_t i;
@@ -37,16 +38,25 @@ ssize_t get_new_len(char *line)
 		{
 			if (current == ';')
 			{
-				new_len += handle_semicolon_case(line, i, next);
+				if (should_insert_space(line[i - 1], current, next))
+					new_len += 2;
+				else
+				{
+					if (line[i - 1] != ' ')
+						new_len++;
+					if (next != ' ')
+						new_len++;
+				}
 			}
 			else
-			{
-				new_len += update_new_len(&line[i]);
-			}
+				update_new_len(&line[i], &new_len);
 		}
 		else if (current == ';')
 		{
-			new_len += handle_initial_semicolon_case(line, i, next);
+			if (i != 0 && line[i - 1] != ' ')
+				new_len++;
+			if (next != ' ' && next != ';')
+				new_len++;
 		}
 
 		new_len++;
@@ -56,71 +66,56 @@ ssize_t get_new_len(char *line)
 }
 
 /**
- *handle_semicolon_case - Handles the semicolon case.
- *@line: The line to check.
- *@index: The index of the current character.
+ *should_insert_space - Checks whether a space should be inserted between
+ *                      characters.
+ *@previous: The previous character.
+ *@current: The current character.
  *@next: The next character.
  *
- *Return: The count to add to new_len.
+ *Return: 1 if a space should be inserted, 0 otherwise.
  *
- *Description: Handles the new length calculation when the current character
- *             is a semicolon.
+ *Description: Determines whether a space should be inserted between
+ *             characters based on specific conditions. It checks for cases
+ *             involving semicolons, double ampersands, and double vertical
+ *             bars (logical operators). If the conditions are met, it returns
+ *             1 to indicate that a space should be inserted; otherwise, it
+ *             returns 0.
  */
-ssize_t handle_semicolon_case(char *line, size_t index, char next)
+int should_insert_space(char previous, char current, char next)
 {
-	ssize_t count = 1;
+	if (current == ';')
+	{
+		if (next == ';' && previous != ' ' && previous != ';')
+			return (1);
+		else if (previous == ';' && next != ' ')
+			return (1);
+		if (previous != ' ')
+			return (1);
+		if (next != ' ')
+			return (1);
+	}
+	else if (current == '&' && next == '&' && previous != ' ')
+		return (1);
+	else if (current == '|' && next == '|' && previous != ' ')
+		return (1);
 
-	if (next == ';' && line[index - 1] != ' ' && line[index - 1] != ';')
-		count++;
-	else if (line[index - 1] == ';' && next != ' ')
-		count++;
-
-	if (line[index - 1] != ' ')
-		count++;
-	if (next != ' ')
-		count++;
-
-	return (count);
-}
-
-/**
- *handle_initial_semicolon_case - Handles the initial semicolon case.
- *@line: The line to check.
- *@index: The index of the current character.
- *@next: The next character.
- *
- *Return: The count to add to new_len.
- *
- *Description: Handles the new length calculation when the current character
- *             is an initial semicolon.
- */
-ssize_t handle_initial_semicolon_case(char *line, size_t index, char next)
-{
-	ssize_t count = 0;
-
-	if (index != 0 && line[index - 1] != ' ')
-		count++;
-	if (next != ' ' && next != ';')
-		count++;
-
-	return (count);
+	return (0);
 }
 
 /**
  *update_new_len - Updates the new length based on specific conditions.
  *@line: The line to check.
- *
- *Return: The count to add to new_len.
+ *@new_len: Pointer to the new length.
  *
  *Description: Handles the new length calculation for specific conditions
  *             in the line.
  */
-ssize_t update_new_len(char *line)
+void update_new_len(char *line, ssize_t *new_len)
 {
 	if (line[0] == ';' && line[1] == ';')
-		return (2);
+		*
+		new_len += 2;
 	else if (line[0] == ';' || line[0] == '|' || line[0] == '&')
-		return (1);
-	else
-		return (0);
+		*
+		new_len += 1;
 }
