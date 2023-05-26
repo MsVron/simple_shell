@@ -3,6 +3,7 @@
 ssize_t get_new_len(char *line);
 ssize_t handle_semicolon_case(char *line, size_t index, char next);
 ssize_t handle_initial_semicolon_case(char *line, size_t index, char next);
+int should_insert_space(char previous, char current, char next);
 void update_new_len(char *line, ssize_t *new_len);
 
 /**
