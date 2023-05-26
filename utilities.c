@@ -6,7 +6,7 @@ char *get_env_value(char *beginning, int len);
 void variable_replacement(char **args, int *exe_ret);
 
 void handle_line(char **line, ssize_t read);
-void handle_character(const char *old_line, char *new_line, size_t *j, char previous, char current, char next);
+void handle_character(char *new_line, size_t *j, char previous, char current, char next)
 ssize_t get_new_len(char *line);
 void logical_ops(char *line, ssize_t *new_len);
 
@@ -189,7 +189,7 @@ void handle_line(char **line, ssize_t read)
 		char previous = (i != 0) ? old_line[i - 1] : '\0';
 		char current = old_line[i];
 		char next = old_line[i + 1];
-		handle_character(old_line, new_line, &j, previous, current, next);
+		handle_character(new_line, &j, previous, current, next);
 	}
 
 	new_line[j] = '\0';
@@ -214,7 +214,7 @@ void handle_line(char **line, ssize_t read)
  * Updates the new_line and j variables based on the character analysis.
  * This function is used in the handle_line function for line partitioning.
  */
-void handle_character(const char *old_line, char *new_line, size_t *j, char previous, char current, char next)
+void handle_character(char *new_line, size_t *j, char previous, char current, char next)
 {
 	if (i != 0)
 	{
