@@ -245,12 +245,10 @@ ssize_t get_new_len(char *line)
 	size_t i;
 	ssize_t new_len = 0;
 	char current, next;
-
 	for (i = 0; line[i]; i++)
 	{
 		current = line[i];
 		next = line[i + 1];
-
 		if (current == '#')
 		{
 			if (i == 0 || line[i - 1] == ' ')
@@ -267,7 +265,6 @@ ssize_t get_new_len(char *line)
 					new_len += 2;
 				else if (line[i - 1] == ';' && next != ' ')
 					new_len += 2;
-
 				if (line[i - 1] != ' ')
 					new_len++;
 				if (next != ' ')
@@ -283,11 +280,9 @@ ssize_t get_new_len(char *line)
 			if (next != ' ' && next != ';')
 				new_len++;
 		}
-
 		new_len++;
 	}
-
-	return new_len;
+	return (new_len);
 }
 
 /**
