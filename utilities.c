@@ -160,7 +160,8 @@ void variable_replacement(char **line, int *exe_ret)
 }
 
 /**
- *should_insert_space - Checks if a space should be inserted between characters.
+ *should_insert_space - Checks if a space should be 
+ *inserted between characters.
  *@previous: The previous character.
  *@current: The current character.
  *@next: The next character.
