@@ -1,6 +1,7 @@
 #include "main.h"
 
 /* tasks 11 and 12*/
+void logical_ops(char *line, ssize_t *new_len);
 
 ssize_t get_new_len(char *line);
 
