@@ -67,15 +67,18 @@ ssize_t get_new_len(char *line)
 }
 
 /**
- *handle_semicolon_case - Handles the new length calculation for semicolon cases.
+ *handle_semicolon_case - Handles the new length
+ *calculation for semicolon cases.
  *@line: The line to check.
  *@index: The current index in the line.
  *@next: The next character.
  *
  *Return: The additional length to add.
  *
- *Description: Handles the new length calculation for cases involving semicolons.
- *             It checks for specific conditions and returns the additional length to add.
+ *Description: Handles the new length calculation for cases
+ *		involving semicolons.
+ *		It checks for specific conditions and returns
+ *		the additional length to add.
  */
 ssize_t handle_semicolon_case(char *line, size_t index, char next)
 {
@@ -86,19 +89,22 @@ ssize_t handle_semicolon_case(char *line, size_t index, char next)
 	if (line[index - 1] != ' ')
 		additional_len++;
 
-	return additional_len + 2;
+	return (additional_len + 2);
 }
 
 /**
- *handle_initial_semicolon_case - Handles the new length calculation for initial semicolon case.
+ *handle_initial_semicolon_case - Handles the new
+ * length calculation for initial semicolon case.
  *@line: The line to check.
  *@index: The current index in the line.
  *@next: The next character.
  *
  *Return: The additional length to add.
  *
- *Description: Handles the new length calculation for the initial semicolon case.
- *             It checks for specific conditions and returns the additional length to add.
+ *Description: Handles the new length calculation
+ *		for the initial semicolon case.
+ *		It checks for specific conditions
+ *		and returns the additional length to add.
  */
 ssize_t handle_initial_semicolon_case(char *line, size_t index, char next)
 {
@@ -109,7 +115,7 @@ ssize_t handle_initial_semicolon_case(char *line, size_t index, char next)
 	if (next != ' ' && next != ';')
 		additional_len++;
 
-	return additional_len;
+	return (additional_len);
 }
 
 /**
